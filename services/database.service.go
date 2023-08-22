@@ -1,9 +1,9 @@
 package services
 
 import (
+	"backend/models"
 	"log"
 	"os"
-	"template/models"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
@@ -28,5 +28,5 @@ func ConnectDatabase() {
 	//DB.Exec("DELETE FROM items")
 	//DB.Exec("DELETE FROM users")
 	//DB.Delete(&[]models.User{}, &[]models.Post{}).Where("1=1")
-	DB.AutoMigrate(&models.Video{})
+	DB.AutoMigrate(&models.User{}, &models.Item{})
 }
