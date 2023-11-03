@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/controllers"
+	"backend/middlewares"
 	"backend/services"
 
 	"github.com/gin-gonic/gin"
@@ -19,19 +20,23 @@ func RunRouter() {
 	})
 
 	UserRoute := router.Group("/api/user")
+	UserRoute.PUT("/", controllers.AddUser)
 	UserRoute.GET("/", controllers.AllUsers)
-	UserRoute.GET("/:id", controllers.GetOneUser)
-	UserRoute.POST("/", controllers.AddUser)
-	UserRoute.POST("/update", controllers.UpdateUser)
-	UserRoute.POST("/buycoins", controllers.UpdateCoins)
-	//TODO: make route protected
-	ItemRoute := router.Group("/api/item")
+	UserRoute.POST("/login", controllers.LoginUser)
 
-	ItemRoute.GET("/", controllers.AllItems)
-	ItemRoute.GET("/:id", controllers.GetOneItem)
-	ItemRoute.POST("/", controllers.CreateItem)
-	ItemRoute.POST("/buy", controllers.BuyItem)
+	UserRoute.Use(middlewares.JwtAuth())
+	UserRoute.GET("/one", controllers.GetOneUser)
+	UserRoute.PATCH("/update", controllers.UpdateUser)
+	UserRoute.DELETE("/delete", controllers.DeleteUser)
 
+	ItemRoute := router.Group("/api/book")
+	ItemRoute.GET("/", controllers.AllPosts)
+	ItemRoute.GET("/:id", controllers.GetOnePost)
+	ItemRoute.GET("/search/:name", controllers.SearchPost)
+
+	ItemRoute.Use(middlewares.JwtAuth())
+	ItemRoute.PUT("/", controllers.CreatePost)
+	ItemRoute.PUT("/upload/:id", controllers.AddPostUrl)
 	router.Run(":8080")
 }
 func main() {
